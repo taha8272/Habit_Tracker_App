@@ -3,7 +3,11 @@ import 'package:car_rental/data/dummy_data.dart';
 import 'package:car_rental/models/habit.dart';
 import 'package:car_rental/providers/habit_stream.dart';
 import 'package:car_rental/screens/add_new_habit.dart';
+import 'package:car_rental/widgets/bar.dart';
+import 'package:car_rental/widgets/drawer.dart';
+
 import 'package:car_rental/widgets/habit_tile.dart';
+import 'package:car_rental/widgets/leaderboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +39,12 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   }
 
   @override
+  String? selectedOption = 'No Display';
+  List<String> options = [
+    'No Display',
+    'Show Circular progress Bar',
+    'Show Habit leaderboard',
+  ];
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsStreamProvider);
     return Scaffold(
@@ -88,145 +98,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
         ),
       ),
 
-      drawer: Drawer(
-        backgroundColor: Color(0xFF0A344D),
-
-        child: Column(
-          children: [
-            DrawerHeader(
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF0A344D), Color(0xFF1D6C8B)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(width: 0),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.run_circle_outlined,
-                    color: const Color.fromARGB(255, 187, 238, 245),
-                    size: 45,
-                  ),
-                  const SizedBox(width: 15),
-                  Text('Habit Tracker', style: h1),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.home,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Home', style: h2),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.settings,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Settings', style: h2),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.support_agent_sharp,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Suggestions', style: h2),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.stars,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Rate this app', style: h2),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.share,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Share this app', style: h2),
-                    onTap: () {},
-                  ),
-                  Divider(
-                    color: Colors.white24,
-                    thickness: 1,
-                    indent: 8,
-                    endIndent: 8,
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.logout,
-                      color: const Color.fromARGB(255, 187, 238, 245),
-                      size: 25,
-                    ),
-                    title: Text('Sign out', style: h2),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          backgroundColor: lightColor,
-                          title: Text('Log out', style: h1),
-                          content: Text(
-                            'Are you sure you wanna log out, you will have to enter your credentials to log in again',
-                            style: text,
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Cancel'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: colortext,
-                                foregroundColor: darkColor,
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                FirebaseAuth.instance.signOut();
-                              },
-                              child: Text('Log out'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: lightColor,
-                                foregroundColor: colortext,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      drawer: DrawerWidget(),
 
       body: SafeArea(
         child: habitsAsync.when(
@@ -234,12 +106,64 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
             if (habits.isEmpty) {
               return const Center(child: Text('No habits yet.'));
             }
-            return ListView.builder(
-              itemCount: habits.length,
-              itemBuilder: (context, index) {
-                final habit = habits[index];
-                return HabitTile(habit: habit);
-              },
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 30, left: 10),
+                  child: Align(
+                    alignment:
+                        Alignment.centerLeft, // <-- fixed (remove Geometry)
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ), // control size
+                      decoration: BoxDecoration(
+                        color: lightColor,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isDense: true, // makes it tighter
+                          style: text,
+                          dropdownColor: lightColor,
+                          borderRadius: BorderRadius.circular(14),
+                          iconEnabledColor: Colors.white,
+                          iconDisabledColor: Colors.white,
+                          value: selectedOption,
+                          items: options.map((String e) {
+                            return DropdownMenuItem<String>(
+                              value: e,
+                              child: Text(e),
+                            );
+                          }).toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                if (selectedOption == 'Show Habit leaderboard')
+                  Expanded(child: HabitLeaderboard(habits: habits)),
+
+                if (selectedOption == 'Show Circular progress Bar')
+                  RotatingHabitsChart(habits: habits),
+
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: habits.length,
+                    itemBuilder: (context, index) {
+                      final habit = habits[index];
+                      return HabitTile(habit: habit);
+                    },
+                  ),
+                ),
+              ],
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),

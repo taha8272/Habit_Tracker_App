@@ -43,7 +43,7 @@ class Habit {
 
 enum Categories {
   health,
-  productivity,
+  productive,
   learning,
   mentalHealth,
   social,
@@ -69,9 +69,9 @@ var categories = {
     categoryName: 'Health',
     color: Color(0xFFE53935),
   ),
-  Categories.productivity: CCategory(
+  Categories.productive: CCategory(
     icon: Icon(Icons.work, color: Color(0xFF3949AB)),
-    categoryName: 'Productivity',
+    categoryName: 'Productive',
     color: Color(0xFF3949AB),
   ),
   Categories.learning: CCategory(

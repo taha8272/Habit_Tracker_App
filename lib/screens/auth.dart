@@ -1,8 +1,12 @@
 import 'package:car_rental/basic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
 import 'package:glass/glass.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 final firebase = FirebaseAuth.instance;
 
@@ -53,6 +57,39 @@ class _AuthScreenState extends State<AuthScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.message ?? 'Authentication Error')),
       );
+    }
+  }
+
+  void signInWithGoogle(BuildContext context) async {
+    try {
+      // Initialize with web client ID
+      await GoogleSignIn.instance.initialize(
+        serverClientId:
+            "441399884204-28g3hssomcdkb2kb8i85desk3sqqvuj3.apps.googleusercontent.com",
+      );
+
+      // Trigger the Google Sign-In flow
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      if (googleUser == null) return;
+
+      // Get authentication details
+      final googleAuth = await googleUser.authentication;
+
+      // Build Firebase credential
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in with Firebase
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Google sign-in failed")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 
@@ -192,6 +229,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                         const SizedBox(height: 30),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -212,6 +250,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            signInWithGoogle(context);
+                          },
+                          child: Text('Sign in with google'),
                         ),
                       ],
                     ),
