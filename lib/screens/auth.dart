@@ -65,7 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
       // Initialize with web client ID
       await GoogleSignIn.instance.initialize(
         serverClientId:
-            "441399884204-28g3hssomcdkb2kb8i85desk3sqqvuj3.apps.googleusercontent.com",
+            "dummy",
       );
 
       // Trigger the Google Sign-In flow
