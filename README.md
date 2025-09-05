@@ -1,4 +1,4 @@
-# car_rental
+# Habit Goals Tracker
 
 A new Flutter project.
 
