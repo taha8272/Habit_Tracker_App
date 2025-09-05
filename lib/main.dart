@@ -1,7 +1,6 @@
-import 'package:car_rental/screens/auth.dart';
+import 'package:Habit_Goals_Tracker/screens/auth.dart';
 
-import 'package:car_rental/screens/email_verify.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Habit_Goals_Tracker/screens/email_verify.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

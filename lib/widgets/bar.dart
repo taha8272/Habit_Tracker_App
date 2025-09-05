@@ -1,23 +1,22 @@
 import 'dart:math';
-import 'package:car_rental/basic.dart';
 import 'package:flutter/material.dart';
 import '../models/habit.dart';
 
-class RotatingHabitsChart extends StatefulWidget {
+class RadialHabitsChart extends StatefulWidget {
   final List<Habit> habits;
   final int maxStreak;
 
-  const RotatingHabitsChart({
+  const RadialHabitsChart({
     super.key,
     required this.habits,
-    this.maxStreak = 30, // define a month as max progress
+    this.maxStreak = 30,
   });
 
   @override
-  State<RotatingHabitsChart> createState() => _RotatingHabitsChartState();
+  State<RadialHabitsChart> createState() => _RadialHabitsChartState();
 }
 
-class _RotatingHabitsChartState extends State<RotatingHabitsChart>
+class _RadialHabitsChartState extends State<RadialHabitsChart>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -26,8 +25,8 @@ class _RotatingHabitsChartState extends State<RotatingHabitsChart>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 20),
-    )..repeat();
+      duration: const Duration(seconds: 3),
+    )..forward();
   }
 
   @override
@@ -38,152 +37,121 @@ class _RotatingHabitsChartState extends State<RotatingHabitsChart>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 8),
-      child: SizedBox(
-        height: 200,
-        width: 200,
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (_, __) {
-            return CustomPaint(
-              painter: _HabitsPainter(
-                habits: widget.habits,
-                maxStreak: widget.maxStreak,
-                rotation: _controller.value * 2 * pi,
-              ),
-            );
-          },
-        ),
+    return SizedBox(
+      height: 280,
+      width: 280,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return CustomPaint(
+            painter: _RadialPainter(
+              habits: widget.habits,
+              maxStreak: widget.maxStreak,
+              progress: _controller.value,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class _HabitsPainter extends CustomPainter {
+class _RadialPainter extends CustomPainter {
   final List<Habit> habits;
   final int maxStreak;
-  final double rotation;
+  final double progress;
 
-  _HabitsPainter({
+  _RadialPainter({
     required this.habits,
     required this.maxStreak,
-    required this.rotation,
+    required this.progress,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final radius = size.width / 3;
+    final baseRadius = size.width / 3;
+    final count = habits.length;
+    if (count == 0) return;
 
-    // gradient-filled circle background
-    final circleFill = Paint()
+    // Central hub
+    final hubPaint = Paint()
       ..shader = RadialGradient(
-        colors: [
-          lightColor, // center
-          darkColor, // edge
-        ],
-        stops: const [0.3, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(center, radius, circleFill);
+        colors: [Colors.blue.shade800, Colors.black87],
+      ).createShader(Rect.fromCircle(center: center, radius: baseRadius / 2));
+    canvas.drawCircle(center, 40, hubPaint);
 
-    // circle border
-    final circleBorder = Paint()
-      ..color = darkColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
-    canvas.drawCircle(center, radius, circleBorder);
-
-    // Draw "Habits" in center
-    final centerText = TextPainter(
-      text: TextSpan(
+    final hubText = TextPainter(
+      text: const TextSpan(
         text: "Habits",
         style: TextStyle(
           color: Colors.white,
-          fontSize: 18,
           fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
       ),
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
     )..layout();
-    centerText.paint(
+    hubText.paint(
       canvas,
-      center - Offset(centerText.width / 2, centerText.height / 2),
+      center - Offset(hubText.width / 2, hubText.height / 2),
     );
 
-    // bars
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap
-          .butt // flat edges
-      ..strokeWidth = 45;
-
-    final count = habits.length;
-    if (count == 0) return;
+    // Sweep angle for each arc (full circle split)
+    final sweep = (2 * pi) / count;
 
     for (int i = 0; i < count; i++) {
       final habit = habits[i];
-      final angle = (2 * pi / count) * i + rotation;
-
       final streakRatio = (habit.streak / maxStreak).clamp(0.0, 1.0);
 
-      final startOffset = 14.0; // offset to avoid overlap with circle border
-      final extraLength = radius * streakRatio;
+      final startAngle = (sweep * i) - pi / 2;
+      final sweepAngle = sweep * streakRatio * progress; // animate fill
 
-      // pull start back by half strokeWidth so flat side touches circle
-      final start = Offset(
-        center.dx + (radius + startOffset - paint.strokeWidth / 2) * cos(angle),
-        center.dy + (radius + startOffset - paint.strokeWidth / 2) * sin(angle),
-      );
-      final end = Offset(
-        center.dx + (radius + startOffset + extraLength) * cos(angle),
-        center.dy + (radius + startOffset + extraLength) * sin(angle),
-      );
+      final rect = Rect.fromCircle(center: center, radius: baseRadius);
 
-      // draw bar (flat at inner side)
-      paint.color = darkColor;
-      canvas.drawLine(start, end, paint);
+      // Gradient arc
+      final paint = Paint()
+        ..shader = SweepGradient(
+          startAngle: startAngle,
+          endAngle: startAngle + sweep,
+          colors: [Colors.red, Colors.yellow, Colors.green],
+        ).createShader(rect)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 16
+        ..strokeCap = StrokeCap.round;
 
-      // draw rounded cap at outer side
-      final capPaint = Paint()
-        ..color = darkColor
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(end, paint.strokeWidth / 2, capPaint);
+      canvas.drawArc(rect, startAngle, sweepAngle, false, paint);
 
-      // Draw habit name along the bar (rotated)
-      final labelPos = Offset(
-        center.dx + (radius + startOffset + extraLength / 2) * cos(angle),
-        center.dy + (radius + startOffset + extraLength / 2) * sin(angle),
+      // Label outside arc
+      final labelAngle = startAngle + sweep / 2;
+      final labelOffset = Offset(
+        center.dx + (baseRadius + 30) * cos(labelAngle),
+        center.dy + (baseRadius + 30) * sin(labelAngle),
       );
 
-      final textPainter = TextPainter(
+      final label = TextPainter(
         text: TextSpan(
-          text: habit.name,
+          text: "🔥 ${habit.streak}\n${habit.name}",
           style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       )..layout();
 
-      canvas.save();
-      canvas.translate(labelPos.dx, labelPos.dy);
-      canvas.rotate(angle);
-      textPainter.paint(
+      label.paint(
         canvas,
-        Offset(-textPainter.width / 2, -textPainter.height / 2),
+        labelOffset - Offset(label.width / 2, label.height / 2),
       );
-      canvas.restore();
     }
   }
 
   @override
-  bool shouldRepaint(_HabitsPainter oldDelegate) {
-    return oldDelegate.rotation != rotation || oldDelegate.habits != habits;
+  bool shouldRepaint(covariant _RadialPainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.habits != habits;
   }
 }

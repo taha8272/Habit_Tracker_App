@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:car_rental/basic.dart';
-import 'package:car_rental/screens/habits_screen.dart';
+import 'package:Habit_Goals_Tracker/basic.dart';
+import 'package:Habit_Goals_Tracker/screens/tabs.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 

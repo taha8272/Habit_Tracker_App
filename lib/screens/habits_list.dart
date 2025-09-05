@@ -1,101 +1,45 @@
-import 'package:car_rental/basic.dart';
-import 'package:car_rental/data/dummy_data.dart';
-import 'package:car_rental/models/habit.dart';
-import 'package:car_rental/providers/habit_stream.dart';
-import 'package:car_rental/screens/add_new_habit.dart';
-import 'package:car_rental/widgets/bar.dart';
-import 'package:car_rental/widgets/drawer.dart';
-
-import 'package:car_rental/widgets/habit_tile.dart';
-import 'package:car_rental/widgets/leaderboard.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:Habit_Goals_Tracker/basic.dart';
+import 'package:Habit_Goals_Tracker/providers/habit_stream.dart';
+import 'package:Habit_Goals_Tracker/widgets/bar.dart';
+import 'package:Habit_Goals_Tracker/widgets/drawer.dart';
+import 'package:Habit_Goals_Tracker/widgets/habit_tile.dart';
+import 'package:Habit_Goals_Tracker/widgets/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:car_rental/providers/habits_list_provider.dart';
-import 'dart:math' as math;
 
-class HabitsScreen extends ConsumerStatefulWidget {
-  const HabitsScreen({super.key});
+class HabitsListScreen extends ConsumerStatefulWidget {
+  const HabitsListScreen({super.key});
 
   @override
-  ConsumerState<HabitsScreen> createState() => _HabitsScreenState();
+  ConsumerState<HabitsListScreen> createState() => _HabitsListState();
 }
 
-class _HabitsScreenState extends ConsumerState<HabitsScreen> {
-  int selectedPageIndex = 0;
-  void onItemTapped(int index) {
-    setState(() {
-      selectedPageIndex = index;
-    });
-  }
-
-  void showModalOverlay() {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) => AddNewHabitScreen(),
-    );
-  }
-
+class _HabitsListState extends ConsumerState<HabitsListScreen> {
   @override
   String? selectedOption = 'No Display';
+
   List<String> options = [
     'No Display',
     'Show Circular progress Bar',
     'Show Habit leaderboard',
   ];
+
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsStreamProvider);
     return Scaffold(
+      extendBody: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 63),
-          child: ElevatedButton(
-            onPressed: () {},
-            child: Text('Habit Tracker', style: text),
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF1D6C8B)),
-          ),
+        toolbarHeight: 70,
+        backgroundColor: lightColor,
+        title: ElevatedButton(
+          onPressed: () {},
+
+          style: ElevatedButton.styleFrom(backgroundColor: darkColor),
+          child: Text('Habit Tracker', style: h1),
         ),
-      ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 6.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextButton.icon(
-              icon: Icon(
-                Icons.home,
-                color: selectedPageIndex == 0 ? lightColor : Colors.grey,
-              ),
-              label: Text('Today'),
-              onPressed: () => onItemTapped(0),
-            ),
-
-            SizedBox(width: 40), // space for FAB in middle
-
-            ElevatedButton(
-              onPressed: showModalOverlay,
-
-              style: ElevatedButton.styleFrom(backgroundColor: darkColor),
-              child: Icon(Icons.add, color: colortext, size: 25),
-            ),
-
-            SizedBox(width: 40),
-
-            TextButton.icon(
-              icon: Icon(
-                Icons.person,
-                color: selectedPageIndex == 1 ? lightColor : Colors.grey,
-              ),
-              label: Text('Habit'),
-              onPressed: () => onItemTapped(1),
-            ),
-          ],
-        ),
+        centerTitle: true,
       ),
 
       drawer: DrawerWidget(),
@@ -152,7 +96,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   Expanded(child: HabitLeaderboard(habits: habits)),
 
                 if (selectedOption == 'Show Circular progress Bar')
-                  RotatingHabitsChart(habits: habits),
+                  RadialHabitsChart(habits: habits),
 
                 Expanded(
                   child: ListView.builder(

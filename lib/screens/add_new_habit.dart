@@ -1,11 +1,11 @@
-import 'package:car_rental/basic.dart';
-import 'package:car_rental/models/category.dart';
-import 'package:car_rental/models/habit.dart';
-import 'package:car_rental/providers/habits_list_provider.dart';
+import 'package:Habit_Goals_Tracker/basic.dart';
+import 'package:Habit_Goals_Tracker/models/category.dart';
+import 'package:Habit_Goals_Tracker/models/habit.dart';
+import 'package:Habit_Goals_Tracker/providers/habits_list_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:car_rental/models/category.dart';
+import 'package:Habit_Goals_Tracker/models/category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddNewHabitScreen extends ConsumerStatefulWidget {
@@ -16,6 +16,7 @@ class AddNewHabitScreen extends ConsumerStatefulWidget {
 }
 
 class _AddNewHabitScreenState extends ConsumerState<AddNewHabitScreen> {
+  Goal currentGoal = Goal.oneMonth;
   final formKey = GlobalKey<FormState>();
   var selectedName;
   var selectedDescription;
@@ -39,6 +40,7 @@ class _AddNewHabitScreenState extends ConsumerState<AddNewHabitScreen> {
         'Name': selectedName,
         'Desc': selectedDescription,
         'Category': selectedCategory.categoryName,
+        'Goal': currentGoal.days,
         'Streak': 0,
         'IsChecked': false,
       });
@@ -115,8 +117,67 @@ class _AddNewHabitScreenState extends ConsumerState<AddNewHabitScreen> {
                         selectedName = newValue;
                       },
                     ),
-                    const SizedBox(height: 20),
 
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        label: Text('Description', style: h2),
+                        prefixIcon: Icon(
+                          Icons.edit_document,
+                          color: Colors.white70,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white.withValues(alpha: 0.1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      maxLength: 100,
+                      autocorrect: false,
+                      style: text,
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().length < 1) {
+                          return 'Enter Description';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        selectedDescription = newValue;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    DropdownButtonFormField<Goal>(
+                      decoration: InputDecoration(
+                        label: Text('Select Duration'),
+                        labelStyle: h1,
+                        prefixIcon: Icon(Icons.flag, color: Colors.white),
+                        // filled: true,
+                        // fillColor: Colors.white.withValues(alpha: 0.2),
+                        // border: OutlineInputBorder(
+                        //   borderRadius: BorderRadius.circular(12),
+                        //   borderSide: BorderSide.none,
+                        // ),
+                      ),
+                      style: text,
+                      dropdownColor: darkColor,
+                      iconEnabledColor: Colors.white,
+                      initialValue: currentGoal,
+                      items: Goal.values
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.label),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        currentGoal = value!;
+                      },
+                    ),
+                    const SizedBox(height: 60),
                     Text('Select Category: ', style: h2),
 
                     const SizedBox(height: 20),
@@ -170,36 +231,6 @@ class _AddNewHabitScreenState extends ConsumerState<AddNewHabitScreen> {
                             ),
                           ),
                         );
-                      },
-                    ),
-                    const SizedBox(height: 80),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        label: Text('Description', style: h2),
-                        prefixIcon: Icon(
-                          Icons.edit_document,
-                          color: Colors.white70,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white.withValues(alpha: 0.1),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      maxLength: 100,
-                      autocorrect: false,
-                      style: text,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 1) {
-                          return 'Enter Description';
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) {
-                        selectedDescription = newValue;
                       },
                     ),
                   ],
