@@ -11,15 +11,16 @@ Develop good habits and break bad ones with Habit Tracker! Built with Flutter, t
 ## ✨ Features
 
 - 📅 Add, edit, and delete daily habits
-- 🔔 Set reminders and habit goals
-- 📊 View progress by category
+- 🔔 Set weekly, monthly, or yearly habit goals
+- 🔍 Track progress for each habit with individual circular indicators
+- 🎯 Monitor overall performance with a global progress ring that aggregates all habits
+- 📊 View category-based analytics and habit breakdowns
 - 🔑 Sign in with Google or Email/Password
 - ☁️ Real-time sync with Firebase Firestore
-- 🖼️ Profile image storage using Firebase Storage
 - 🎨 Custom UI with animations and Glassmorphism
 - 🧪 Testing
-        - Includes basic widget tests (`test/widget_test.dart`)
-        - Planned: unit tests for models and integration tests with Firebase mocks
+  - Includes basic widget tests (`test/widget_test.dart`)
+  - Planned: unit tests for models and integration tests with Firebase mocks
 
 ## 🛠️ Tech Stack
 
