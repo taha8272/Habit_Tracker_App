@@ -1,9 +1,8 @@
 # Habit_Tracker_App
 
 ![Flutter](https://img.shields.io/badge/-Flutter-blue?logo=flutter&logoColor=white)
-![Flutter](https://img.shields.io/badge/-Flutter-blue?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/-Dart-0175C2?logo=dart&logoColor=white)
-![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?logo=firebase&logoColor=black)
+![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?logo=firebase&logoColor=red)
 
 ## 📝 Description
 
