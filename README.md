@@ -32,8 +32,6 @@ Develop good habits and break bad ones with Habit Tracker! Built with Flutter, t
 
 ```
 name: Habit_Goals_Tracker
-description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 sdk: flutter
 cupertino_icons: ^1.0.8
