@@ -6,6 +6,7 @@ import 'package:Habit_Goals_Tracker/widgets/habit_tile.dart';
 import 'package:Habit_Goals_Tracker/widgets/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class HabitsListScreen extends ConsumerStatefulWidget {
   const HabitsListScreen({super.key});
@@ -16,10 +17,10 @@ class HabitsListScreen extends ConsumerStatefulWidget {
 
 class _HabitsListState extends ConsumerState<HabitsListScreen> {
   @override
-  String? selectedOption = 'No Display';
+  String? selectedOption = 'Change Display';
 
   List<String> options = [
-    'No Display',
+    'Change Display',
     'Show Circular progress Bar',
     'Show Habit leaderboard',
   ];
@@ -36,7 +37,7 @@ class _HabitsListState extends ConsumerState<HabitsListScreen> {
           onPressed: () {},
 
           style: ElevatedButton.styleFrom(backgroundColor: darkColor),
-          child: Text('Habit Tracker', style: h1),
+          child: Text('Routine Buddy', style: h1),
         ),
 
         centerTitle: true,
@@ -53,40 +54,46 @@ class _HabitsListState extends ConsumerState<HabitsListScreen> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 30, left: 10),
-                  child: Align(
-                    alignment:
-                        Alignment.centerLeft, // <-- fixed (remove Geometry)
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ), // control size
-                      decoration: BoxDecoration(
-                        color: lightColor,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isDense: true, // makes it tighter
-                          style: text,
-                          dropdownColor: lightColor,
-                          borderRadius: BorderRadius.circular(14),
-                          iconEnabledColor: Colors.white,
-                          iconDisabledColor: Colors.white,
-                          value: selectedOption,
-                          items: options.map((String e) {
-                            return DropdownMenuItem<String>(
-                              value: e,
-                              child: Text(e),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            setState(() {
-                              selectedOption = value;
-                            });
-                          },
-                        ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      DateFormat('EEEE, dd MMM yyyy').format(DateTime.now()),
+                      style: h1.copyWith(fontSize: 20, color: darkColor),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 3,
+                    vertical: 8,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: lightColor,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: darkColor, width: 1),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedOption,
+                        items: options.map((String e) {
+                          return DropdownMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          );
+                        }).toList(),
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedOption = value;
+                          });
+                        },
+                        dropdownColor: lightColor,
+                        style: text,
+                        iconEnabledColor: Colors.white,
                       ),
                     ),
                   ),

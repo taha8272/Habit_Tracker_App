@@ -1,11 +1,9 @@
 import 'package:Habit_Goals_Tracker/basic.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/button_view.dart';
+
 import 'package:glass/glass.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 final firebase = FirebaseAuth.instance;
@@ -63,10 +61,8 @@ class _AuthScreenState extends State<AuthScreen> {
   void signInWithGoogle(BuildContext context) async {
     try {
       // Initialize with web client ID
-      await GoogleSignIn.instance.initialize(
-        serverClientId:
-            "dummy",
-      );
+
+      await GoogleSignIn.instance.initialize(serverClientId: "dummy");
 
       // Trigger the Google Sign-In flow
       final googleUser = await GoogleSignIn.instance.authenticate();
@@ -252,11 +248,18 @@ class _AuthScreenState extends State<AuthScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            signInWithGoogle(context);
-                          },
-                          child: Text('Sign in with google'),
+                        Container(
+                          height: 45,
+                          width: 200,
+
+                          child: SignInButton(
+                            Buttons.Google,
+
+                            text: "Sign in with Google",
+                            onPressed: () {
+                              signInWithGoogle(context);
+                            },
+                          ),
                         ),
                       ],
                     ),

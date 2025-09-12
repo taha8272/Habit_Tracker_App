@@ -37,21 +37,26 @@ class _RadialHabitsChartState extends State<RadialHabitsChart>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280,
-      width: 280,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return CustomPaint(
-            painter: _RadialPainter(
-              habits: widget.habits,
-              maxStreak: widget.maxStreak,
-              progress: _controller.value,
-            ),
-          );
-        },
-      ),
+    return Column(
+      children: [
+        Text('Complete Habit Goals to fill the circle'),
+        SizedBox(
+          height: 280,
+          width: 280,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: _RadialPainter(
+                  habits: widget.habits,
+                  maxStreak: widget.maxStreak,
+                  progress: _controller.value,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

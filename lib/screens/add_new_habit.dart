@@ -151,7 +151,7 @@ class _AddNewHabitScreenState extends ConsumerState<AddNewHabitScreen> {
                     const SizedBox(height: 20),
                     DropdownButtonFormField<Goal>(
                       decoration: InputDecoration(
-                        label: Text('Select Duration'),
+                        label: Text('Set Goal'),
                         labelStyle: h1,
                         prefixIcon: Icon(Icons.flag, color: Colors.white),
                         // filled: true,

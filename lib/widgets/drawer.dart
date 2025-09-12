@@ -31,7 +31,7 @@ class DrawerWidget extends StatelessWidget {
                     size: 45,
                   ),
                   const SizedBox(width: 15),
-                  Text('Habit Tracker', style: h1),
+                  Text('Settings', style: h1),
                 ],
               ),
             ),
@@ -53,21 +53,21 @@ class DrawerWidget extends StatelessWidget {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      Icons.settings,
+                      Icons.ac_unit_sharp,
                       color: const Color.fromARGB(255, 187, 238, 245),
                       size: 25,
                     ),
-                    title: Text('Settings', style: h2),
+                    title: Text('Track Habits', style: h2),
                     onTap: () {},
                   ),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      Icons.support_agent_sharp,
+                      Icons.border_all_rounded,
                       color: const Color.fromARGB(255, 187, 238, 245),
                       size: 25,
                     ),
-                    title: Text('Suggestions', style: h2),
+                    title: Text('Leaderboard', style: h2),
                     onTap: () {},
                   ),
                   ListTile(
