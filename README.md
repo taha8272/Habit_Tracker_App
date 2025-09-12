@@ -33,7 +33,10 @@ Develop good habits and break bad ones with Habit Tracker! Built with Flutter, t
 ## Screenshots
 
 <img src="assets/screenshots/8.png" width="300"/>    <img src="assets/screenshots/3.png" width="300"/>
-<img src="assets/screenshots/3.png" width="300"/>
+
+<img src="assets/screenshots/9.png" width="300"/>    <img src="assets/screenshots/11.png" width="300"/>
+
+<img src="assets/screenshots/12.png" width="300"/>    <img src="assets/screenshots/14.png" width="300"/>
 
 ## 📦 Key Dependencies
 
